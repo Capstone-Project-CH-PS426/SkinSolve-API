@@ -3,7 +3,7 @@ Final Project Bangkit Academy
 
 
 ### RULES
-- Master **NO PUSH NO MERGE**
+- Main **NO PUSH NO MERGE**
 - Development **NO PUSH** (just merge request)
 - Only use "SELECT/ INSERT/ UPDATE/ DELETE" on **run_query** function
 
