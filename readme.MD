@@ -30,6 +30,7 @@ pip install -r req.txt
 
 ## Run Server
 ```
+cd main
 flask --app main --debug run (debug on)
 flask --app main run (debug off)
 ```
