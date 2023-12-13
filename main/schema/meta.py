@@ -12,47 +12,45 @@ def db_init():
 
     metadata = MetaData()
 
-    banners = Table("banners", metadata,
-        Column("id", String(36), primary_key=True),
-        Column("title", String, unique=True, nullable=False),
-        Column("image", String, nullable=False)
-    )
-
     users = Table("users", metadata,
         Column("id", String(36), primary_key=True),
         Column("name", String, unique=True, nullable=False),
         Column("email", String, unique=True, nullable=False),
         Column("phone", String),
         Column("password", String, nullable=False),
-        Column("type_skin", String),   
+        Column("type_skin", String),
+        Column("skin_problem", String),
+        Column("images", String),
+        Column("notes", String),    
         Column("token", String),
-        Column("type", Boolean, default=False),         # False = 'user' AND True = 'admin'
     )
 
-    categories = Table("categories", metadata,
+    foods = Table("foods", metadata,
         Column("id", String(36), primary_key=True),
-        Column("name", String, unique=True, nullable=False),
-        Column("images", String, nullable=False),
-        Column("is_deleted", Boolean, default=False)
-
-    )
-
-    foods = Table("foods    ", metadata,
-        Column("id", String(36), primary_key=True),
+        Column("user_id", ForeignKey(users.c.id)),
         Column("name", String, nullable=False),
-        Column("detail", String),           # same as description
-        Column("category_id", ForeignKey(categories.c.id)),
+        Column("detail", String), # same as description
+        Column("nutrition", String), 
+        Column("skin_type", String),        # type food          
+        Column("benefit", String),
         Column("images", String),    # ["/image/image1", "/image/image2"] ## /image/image1,/image/image2
-        Column("type_food", String),        # type food
     )
 
     products = Table("products", metadata,
         Column("id", String(36), primary_key=True),
+        Column("user_id", ForeignKey(users.c.id)),
         Column("name", String, nullable=False),
-        Column("detail", String),           # same as description
-        Column("category_id", ForeignKey(categories.c.id)),
-        Column("images", String),    # ["/image/image1", "/image/image2"] ## /image/image1,/image/image2
+        Column("detail", String), # same as description
+        Column("brand", String),\
         Column("type_product", String),        # type skincare
+        Column("composisition", String),        
+        Column("skin_type", String),          
+        Column("images", String),    # ["/image/image1", "/image/image2"] ## /image/image1,/image/image2
+    )
+
+    # IGNORE THIS COLUMN
+    test = Table("test", metadata,
+        Column("name", String(36), primary_key=True),
     )
 
     metadata.create_all(engine, checkfirst=True)
