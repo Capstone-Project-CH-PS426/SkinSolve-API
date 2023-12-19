@@ -7,34 +7,31 @@ TODO
 from flask import Blueprint, request, jsonify
 from schema.meta import engine,meta
 from sqlx import sqlx_easy_orm
-from utils import run_query
 from .support import auth_with_token
+import pickle
 
 foods_bp = Blueprint("foods",__name__,url_prefix='/')
+
+with open('ml/list_foods.pkl', 'rb') as f:
+    df = pickle.load(f)
+with open('ml/similarity_foods.pkl', 'rb') as f:
+    similarity = pickle.load(f)
 
 @foods_bp.route("/foods", methods=["GET"])
 def get_products():
     auth = request.headers.get("authentication")
-    def get_product_main(userdata):
-        if userdata.type_skin == "Oil":
-            data = run_query("SELECT * FROM products WHERE skin_type LIKE 'Oi%'")
-            return ({"data": data, "message":"Success"}),201
-        if userdata.type_skin == "Dry":
-            data = run_query("SELECT * FROM products WHERE skin_type LIKE 'Dr%'")
-            return ({"data": data, "message":"Success"}),201
-        if userdata.type_skin == "Normal":
-            data = run_query("SELECT * FROM products WHERE skin_type LIKE 'Nor%'")
-            return ({"data": data, "message":"Success"}),201
-        if userdata.type_skin == "Combination":
-            data = run_query("SELECT * FROM products WHERE skin_type LIKE 'Combi%'")
-            return ({"data": data, "message":"Success"}),201
-        if userdata.type_skin == "Sensitive":
-            data = run_query("SELECT * FROM products WHERE skin_type LIKE 'Sensiti%'")
-            return ({"data": data, "message":"Success"}),201
-        else:
-            return jsonify ({"message": "Not Found"}),404
+    def get_product_main(userdata,top=10):
+        try:
+            index = df[df['skintype'] == userdata.type_skin].index[0]
+        except IndexError:
+            return(f"No data available for the specified skin type: {userdata.type_skin}")
+        distances = sorted(enumerate(similarity[index]), reverse=True, key=lambda x: x[1])
+        
+        print(f"Top {top} Recommendations for {userdata.type_skin} skin type:")
+        for i in distances:
+            print(f"{df.iloc[i[0]]['name']} ({df.iloc[i[0]]['benefit']})")
+        return jsonify ({"message":"Success,Foods Product"}),201 
     return auth_with_token(auth,get_product_main)
-
 
 @foods_bp.route("/foods/detail", methods=["GET"])
 def product_detail_page():

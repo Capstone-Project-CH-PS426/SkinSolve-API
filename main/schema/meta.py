@@ -20,9 +20,16 @@ def db_init():
         Column("password", String, nullable=False),
         Column("type_skin", String),
         Column("skin_problem", String),
-        Column("images", String),
-        Column("notes", String),    
+        Column("images", String),  
         Column("token", String),
+    )
+    
+    trackers = Table("trackers", metadata,
+        Column("id", String(36), primary_key=True),
+        Column("user_id", ForeignKey(users.c.id)),
+        Column("name", String),
+        Column("images_skin", String),    # ["/image/image1", "/image/image2"] ## /image/image1,/image/image2
+        Column("images_foods", String),    # ["/image/image1", "/image/image2"] ## /image/image1,/image/image2
     )
 
     foods = Table("foods", metadata,
@@ -49,8 +56,7 @@ def db_init():
     )
 
     # IGNORE THIS COLUMN
-    test = Table("test", metadata,
-        Column("name", String(36), primary_key=True),
+    test = Table("test", metadata,        Column("name", String(36), primary_key=True),
     )
 
     metadata.create_all(engine, checkfirst=True)
