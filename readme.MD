@@ -1,7 +1,8 @@
 # SkinSolve
 Final Project Bangkit Academy
+```
 PROJECT BRIEF : https://docs.google.com/document/d/13rUYJPhIE4XMUWUqW9e53c_BCEesiOiSWZlIQZAQDCE/edit?usp=sharing 
-
+```
 
 ### RULES
 - Main **NO PUSH NO MERGE**
